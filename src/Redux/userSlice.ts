@@ -1,11 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface UserState {
-    jwt: string | null
+    token: string | null
 }
 
-const initialState = { 
-    jwt: sessionStorage.getItem("jwt_token")
+const TOKEN_NAME = "token"
+
+export const initialState = { 
+    token: sessionStorage.getItem(TOKEN_NAME)
 } as UserState
 
 
@@ -13,18 +15,16 @@ export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        setUser : (state, action : PayloadAction<string>) => { 
-            state.jwt = action.payload 
-            console.log(state)
+        setUser : (state, action : PayloadAction<string>) => {
+            sessionStorage.setItem(TOKEN_NAME, action.payload)
+            state.token = action.payload 
         },
         logout : (state) => { 
-            state.jwt = null 
+            sessionStorage.removeItem(TOKEN_NAME);
+            state.token = null
         }
     }
 })
-
-export const selectToken = (state : any) => state.user.jwt
-
 
 export const { setUser, logout } = userSlice.actions
 export default userSlice.reducer

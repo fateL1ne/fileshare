@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 import styles from './styles';
 import DescriptionIcon from '@material-ui/icons/Description';
 import { ToastContainer } from 'react-toastify';
@@ -7,18 +7,41 @@ import {
     IconButton, 
     Typography, 
     Toolbar,
-    AppBar 
+    AppBar, 
+    Button
 } from '@material-ui/core';
+import { logout, initialState } from '../../Redux/userSlice';
+import UserReducer from '../../Redux/userSlice';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import UploadButton from '../Upload/Button';
 
 
-interface Props {
+interface MenuProps {
 
 }
 
 
-export default function Menu( {} : Props ) {
+export default function Menu( {} : MenuProps ) {
 
+    const [userState, dispatch] = useReducer(UserReducer, initialState);
     const classes = styles();
+
+    function getOptionPanel() {
+        if (userState.token) {
+            return (
+                <>
+                    <Button 
+                        color="primary"
+                        variant="contained"
+                        startIcon={<AccountCircleIcon/>} 
+                        onClick={ () => dispatch(logout()) }
+                    > Logout 
+                    </Button>
+                </>
+            );    
+        }
+    }
+
     
     return (
         <>
@@ -31,6 +54,7 @@ export default function Menu( {} : Props ) {
                     <Typography variant="h6" className={classes.title}>
                             Fileshare
                     </Typography>
+                    {  getOptionPanel() }
                 </Toolbar>
             </AppBar>
         </div>

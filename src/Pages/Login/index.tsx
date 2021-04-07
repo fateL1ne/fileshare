@@ -1,25 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useReducer } from 'react';
 import { login } from './../../Services/Http/userService';
 import Menu from '../../Components/Menu/index';
 import UserForm from '../../Components/UserForm/index';
 import { Container, Grid } from '@material-ui/core';
-import { toast } from 'react-toastify';
-import { useSelector, useDispatch } from 'react-redux';
-import { setUser, selectToken } from '../../Redux/userSlice';
+import { toast, ToastContainer } from 'react-toastify';
+import { setUser, initialState } from '../../Redux/userSlice';
+import UserReducer from '../../Redux/userSlice';
+import { useHistory } from "react-router-dom";
 
 
 export default function Login() {
 
+    const [userState, dispatch] = useReducer(UserReducer, initialState);
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const dispatch = useDispatch();
-    const token = useSelector(selectToken);
+    const history = useHistory();
 
     function handleSubmit() : void {
         login( { email: email, password: password} )
             .then( res => {
                 dispatch(setUser(res.data));
-
+                toast.info("Login successfully");
+                history.push("/documents");
             }).catch( err => {
                 if (err.response) {
                     toast.error(err.response.data);
@@ -33,6 +35,7 @@ export default function Login() {
     return (
         <>
         <Menu />
+        <ToastContainer/>
         <Container maxWidth="sm">
             <Grid
                 container
@@ -52,7 +55,6 @@ export default function Login() {
                 </Grid>
             </Grid>  
         </Container>
-        {token}
         </>
     );
 }
