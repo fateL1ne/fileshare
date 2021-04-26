@@ -11,7 +11,7 @@ export default function UploadButton(props : Props) {
     return (
         <Button component="label" variant="contained" color="primary" startIcon={<CloudUploadIcon/>} > 
             Upload
-            <input type="file" onChange={(e) => { props.onChangeHandler(e.target.files) }} hidden/>
+            <input type="file" multiple onChange={(e) => { props.onChangeHandler(e.target.files) }} hidden/>
         </Button>
     );
 }

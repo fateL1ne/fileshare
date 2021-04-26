@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
 import { upload } from '../../../Services/Http/fileService';
-import { getIcon } from '../../../Services/helperService';
+import { getIcon } from '../../../Services/documentService';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, TableCell, TableRow } from '@material-ui/core';
 import DoneIcon from '@material-ui/icons/Done';
 import { green } from '@material-ui/core/colors';
 
 
+
 interface Props {
-    file : File
+    file : File,
+    onUpload: () => void
 }
 
 
@@ -18,35 +20,39 @@ export default function FileProgress(props : Props) {
 
     const [ progress, setProgress ] = useState<number>(0);
     const [ completed, setCompleted ] = useState<boolean>(false);
+    const [ success, setSuccess ] = useState<boolean>(false);
     const progressSetter = (e : any) => setProgress(Math.round((100 * e.loaded) / e.total));
+
+    useEffect(() => {
+        if (completed) {
+            console.log('Completed upload: ' + props.file.name)
+            props.onUpload();
+        }
+    }, [completed])
 
 
     useEffect(() => {
         upload(props.file, progressSetter)
             .then(() => {
-                setCompleted(true);
-            }).catch(err => {
+                setSuccess(true);
+            })
+            .catch(err => {  
                 console.log(err);
+            }).finally(() => {
+                setCompleted(true);
             })
     }, [])
 
 
     return (
-        <>
-        <Grid item xs={1}>
-            { getIcon(props.file.type) }
-        </Grid>
-        <Grid item xs={8}>
-            { props.file.name }
-        </Grid>
-        <Grid item xs={2}>
+        <TableRow>
+            <TableCell> {getIcon(props.file.type)} </TableCell>
+            <TableCell> {props.file.name} </TableCell>
+            <TableCell>
             {completed ? <DoneIcon style={{ color: green[500] }}/> :
                 <CircularProgress variant="determinate" size="16px" value={progress}/>
             }   
-        </Grid>
-        <Grid item xs={12}>
-            <LinearProgress variant="determinate" value={progress}/>
-        </Grid>
-        </>
+            </TableCell>
+        </TableRow> 
     );
 }
