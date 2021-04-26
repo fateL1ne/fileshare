@@ -8,7 +8,7 @@ const getAuthHeader = () => {
     }
 }
 
-export function upload( file: File, onUploadProgress: any ) : Promise<AxiosResponse> {
+export function upload( file: File, onUploadProgress: (e: any) => void ) : Promise<AxiosResponse> {
     let body = new FormData();
     body.append('file', file);
 
