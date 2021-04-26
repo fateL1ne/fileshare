@@ -4,8 +4,9 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { getIcon, formatSize } from '../../Services/helperService';
-import { Divider } from '@material-ui/core';
+import { getIcon, formatSize } from '../../Services/documentService';
+import { Divider, Grid } from '@material-ui/core';
+import { CardHeader } from '@material-ui/core';
 
 interface Props {
     filename : string,
@@ -19,16 +20,16 @@ export default function Document(props : Props) {
     return (
         <Card>
             <CardContent>
+                <CardHeader
+                    title={props.filename}
+                    subheader={'Created: ' + new Date(props.created).toLocaleString()}
+                />
                 { getIcon(props.mimetype) }
-                <Typography variant="body2" component="p">
-                        {props.filename}
-                </Typography>
+
                 <Typography variant="body2" component="p">
                         {formatSize(props.size)}
                 </Typography>
-                <Typography variant="body2" component="p">
-                        {new Date(props.created).toLocaleString()}
-                </Typography>
+
             </CardContent>
             <Divider/>
             <CardActions>
